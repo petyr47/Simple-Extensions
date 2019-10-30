@@ -2,8 +2,10 @@ package com.petyr47.simpleextensions
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import com.google.android.material.appbar.AppBarLayout
 import java.text.NumberFormat
 import java.util.*
 
@@ -63,4 +65,17 @@ fun <T> LiveData<T>.nonNullObserve(owner: LifecycleOwner, observer: (t: T) -> Un
     this.observe(owner, androidx.lifecycle.Observer {
         it?.let(observer)
     })
+}
+
+
+/*
+* Attaches Motion layout to Appbar to translate motion between the
+* two view elements in a coordinator view
+* */
+fun AppBarLayout.connectToMotionLayout(motionLayout: MotionLayout){
+    val listener = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        val seekPosition = -verticalOffset / this.totalScrollRange.toFloat()
+        motionLayout.progress = seekPosition
+    }
+    this.addOnOffsetChangedListener(listener)
 }
